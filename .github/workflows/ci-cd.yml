@@ -82,7 +82,7 @@ jobs:
 
       - name: Convert repository name to lowercase
         env:
-        REPO_NAME: ${{ github.repository }}
+          REPO_NAME: ${{ github.repository }}
         run: |
           echo "REPO_LOWER=${REPO_NAME,,}" >> $GITHUB_ENV
 
