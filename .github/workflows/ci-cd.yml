@@ -9,10 +9,10 @@ on:
 
   workflow_dispatch:
     inputs:
-    version:
-      description: 'Версия образа для production (тег)'
-      required: false
-      default: 'latest'
+      version:
+        description: 'Версия образа для production (тег)'
+        required: false
+        default: 'latest'
 
 permissions:
   contents: read
