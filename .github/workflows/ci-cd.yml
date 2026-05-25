@@ -68,17 +68,21 @@ jobs:
   docker-build-push:
     needs: build-and-test
     if: github.ref == 'refs/heads/main'
-
     runs-on: ubuntu-latest
-
+    
     permissions:
       contents: read
-      packages: write
+      packages: write    # Critical: must be explicitly set
 
     steps:
       - uses: actions/checkout@v4
+
       - name: Log in to GitHub Container Registry
-        run: echo "${{ secrets.GITHUB_TOKEN }}" | docker login ghcr.io -u ${{ github.actor }} --password-stdin
+        uses: docker/login-action@v3    # Use action, not manual login
+        with:
+          registry: ghcr.io
+          username: ${{ github.actor }}
+          password: ${{ secrets.GITHUB_TOKEN }}
 
       - name: Convert repository name to lowercase
         env:
@@ -88,6 +92,11 @@ jobs:
 
       - name: Build and push image
         run: |
-          IMAGE_TAG=ghcr.io/${{ env.REPO_LOWER }}:latest
-          docker build -t $IMAGE_TAG .
-          docker push $IMAGE_TAG
+          IMAGE_BASE=ghcr.io/${{ env.REPO_LOWER }}
+          
+          docker build \
+            -t ${IMAGE_BASE}:latest \
+            -t ${IMAGE_BASE}:${{ github.sha }} .
+          
+          docker push ${IMAGE_BASE}:latest
+          docker push ${IMAGE_BASE}:${{ github.sha }}
