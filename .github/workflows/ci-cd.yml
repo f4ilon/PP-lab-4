@@ -205,7 +205,7 @@ jobs:
           name: production-metrics
           path: production_metrics.txt
   
-  notification:a
+  notification:
     if: always()
     needs: [build-and-test, docker-build-push, deploy-staging, deploy-production]
     runs-on: ubuntu-latest
